@@ -1,7 +1,7 @@
-project_name: whoami
+project_name: whoamimcp
 
 builds:
-  - binary: whoami
+  - binary: whoamimcp
     goos:
       - windows
       - darwin
@@ -25,7 +25,7 @@ changelog:
       - '^tests:'
 
 archives:
-  - id: whoami
+  - id: whoamimcp
     name_template: '{{ .ProjectName }}_v{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm}}v{{ .Arm }}{{ end }}'
     format: tar.gz
     format_overrides:
@@ -35,21 +35,21 @@ archives:
       - LICENSE
 
 docker_manifests:
-  - name_template: 'traefik/whoami:{{ .Tag }}'
+  - name_template: 'traefik/whoamimcp:{{ .Tag }}'
     image_templates:
-      - 'traefik/whoami:{{ .Tag }}-amd64'
-      - 'traefik/whoami:{{ .Tag }}-arm64'
-      - 'traefik/whoami:{{ .Tag }}-armv7'
-  - name_template: 'traefik/whoami:latest'
+      - 'traefik/whoamimcp:{{ .Tag }}-amd64'
+      - 'traefik/whoamimcp:{{ .Tag }}-arm64'
+      - 'traefik/whoamimcp:{{ .Tag }}-armv7'
+  - name_template: 'traefik/whoamimcp:latest'
     image_templates:
-      - 'traefik/whoami:{{ .Tag }}-amd64'
-      - 'traefik/whoami:{{ .Tag }}-arm64'
-      - 'traefik/whoami:{{ .Tag }}-armv7'
-  - name_template: 'traefik/whoami:v{{ .Major }}.{{ .Minor }}'
+      - 'traefik/whoamimcp:{{ .Tag }}-amd64'
+      - 'traefik/whoamimcp:{{ .Tag }}-arm64'
+      - 'traefik/whoamimcp:{{ .Tag }}-armv7'
+  - name_template: 'traefik/whoamimcp:v{{ .Major }}.{{ .Minor }}'
     image_templates:
-      - 'traefik/whoami:v{{ .Major }}.{{ .Minor }}-amd64'
-      - 'traefik/whoami:v{{ .Major }}.{{ .Minor }}-arm64'
-      - 'traefik/whoami:v{{ .Major }}.{{ .Minor }}-armv7'
+      - 'traefik/whoamimcp:v{{ .Major }}.{{ .Minor }}-amd64'
+      - 'traefik/whoamimcp:v{{ .Major }}.{{ .Minor }}-arm64'
+      - 'traefik/whoamimcp:v{{ .Major }}.{{ .Minor }}-armv7'
 
 dockers:
   - use: buildx
@@ -57,12 +57,9 @@ dockers:
     goarch: amd64
     dockerfile: buildx.Dockerfile
     image_templates:
-      - 'traefik/whoami:latest-amd64'
-      - 'traefik/whoami:{{ .Tag }}-amd64'
-      - 'traefik/whoami:v{{ .Major }}.{{ .Minor }}-amd64'
-      - 'ghcr.io/traefik/whoami:latest-amd64'
-      - 'ghcr.io/traefik/whoami:{{ .Tag }}-amd64'
-      - 'ghcr.io/traefik/whoami:v{{ .Major }}.{{ .Minor }}-amd64'
+      - 'traefik/whoamimcp:latest-amd64'
+      - 'traefik/whoamimcp:{{ .Tag }}-amd64'
+      - 'traefik/whoamimcp:v{{ .Major }}.{{ .Minor }}-amd64'
     build_flag_templates:
       - '--pull'
       # https://github.com/opencontainers/image-spec/blob/main/annotations.md#pre-defined-annotation-keys
@@ -81,12 +78,9 @@ dockers:
     goarch: arm64
     dockerfile: buildx.Dockerfile
     image_templates:
-      - 'traefik/whoami:latest-arm64'
-      - 'traefik/whoami:{{ .Tag }}-arm64'
-      - 'traefik/whoami:v{{ .Major }}.{{ .Minor }}-arm64'
-      - 'ghcr.io/traefik/whoami:latest-arm64'
-      - 'ghcr.io/traefik/whoami:{{ .Tag }}-arm64'
-      - 'ghcr.io/traefik/whoami:v{{ .Major }}.{{ .Minor }}-arm64'
+      - 'traefik/whoamimcp:latest-arm64'
+      - 'traefik/whoamimcp:{{ .Tag }}-arm64'
+      - 'traefik/whoamimcp:v{{ .Major }}.{{ .Minor }}-arm64'
     build_flag_templates:
       - '--pull'
       # https://github.com/opencontainers/image-spec/blob/main/annotations.md#pre-defined-annotation-keys
@@ -106,12 +100,9 @@ dockers:
     goarm: '7'
     dockerfile: buildx.Dockerfile
     image_templates:
-      - 'traefik/whoami:latest-armv7'
-      - 'traefik/whoami:{{ .Tag }}-armv7'
-      - 'traefik/whoami:v{{ .Major }}.{{ .Minor }}-armv7'
-      - 'ghcr.io/traefik/whoami:latest-armv7'
-      - 'ghcr.io/traefik/whoami:{{ .Tag }}-armv7'
-      - 'ghcr.io/traefik/whoami:v{{ .Major }}.{{ .Minor }}-armv7'
+      - 'traefik/whoamimcp:latest-armv7'
+      - 'traefik/whoamimcp:{{ .Tag }}-armv7'
+      - 'traefik/whoamimcp:v{{ .Major }}.{{ .Minor }}-armv7'
     build_flag_templates:
       - '--pull'
       # https://github.com/opencontainers/image-spec/blob/main/annotations.md#pre-defined-annotation-keys
