@@ -1,0 +1,126 @@
+project_name: whoami
+
+builds:
+  - binary: whoami
+    goos:
+      - windows
+      - darwin
+      - linux
+    goarch:
+      - amd64
+      - arm
+      - arm64
+    goarm:
+      - '7'
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - '^docs:'
+      - '^doc:'
+      - '^chore:'
+      - '^chore(deps):'
+      - '^test:'
+      - '^tests:'
+
+archives:
+  - id: whoami
+    name_template: '{{ .ProjectName }}_v{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm}}v{{ .Arm }}{{ end }}'
+    format: tar.gz
+    format_overrides:
+      - goos: windows
+        format: zip
+    files:
+      - LICENSE
+
+docker_manifests:
+  - name_template: 'traefik/whoami:{{ .Tag }}'
+    image_templates:
+      - 'traefik/whoami:{{ .Tag }}-amd64'
+      - 'traefik/whoami:{{ .Tag }}-arm64'
+      - 'traefik/whoami:{{ .Tag }}-armv7'
+  - name_template: 'traefik/whoami:latest'
+    image_templates:
+      - 'traefik/whoami:{{ .Tag }}-amd64'
+      - 'traefik/whoami:{{ .Tag }}-arm64'
+      - 'traefik/whoami:{{ .Tag }}-armv7'
+  - name_template: 'traefik/whoami:v{{ .Major }}.{{ .Minor }}'
+    image_templates:
+      - 'traefik/whoami:v{{ .Major }}.{{ .Minor }}-amd64'
+      - 'traefik/whoami:v{{ .Major }}.{{ .Minor }}-arm64'
+      - 'traefik/whoami:v{{ .Major }}.{{ .Minor }}-armv7'
+
+dockers:
+  - use: buildx
+    goos: linux
+    goarch: amd64
+    dockerfile: buildx.Dockerfile
+    image_templates:
+      - 'traefik/whoami:latest-amd64'
+      - 'traefik/whoami:{{ .Tag }}-amd64'
+      - 'traefik/whoami:v{{ .Major }}.{{ .Minor }}-amd64'
+      - 'ghcr.io/traefik/whoami:latest-amd64'
+      - 'ghcr.io/traefik/whoami:{{ .Tag }}-amd64'
+      - 'ghcr.io/traefik/whoami:v{{ .Major }}.{{ .Minor }}-amd64'
+    build_flag_templates:
+      - '--pull'
+      # https://github.com/opencontainers/image-spec/blob/main/annotations.md#pre-defined-annotation-keys
+      - '--label=org.opencontainers.image.title={{.ProjectName}}'
+      - '--label=org.opencontainers.image.description=Tiny Go webserver that prints OS information and HTTP request to output'
+      - '--label=org.opencontainers.image.source={{.GitURL}}'
+      - '--label=org.opencontainers.image.url={{.GitURL}}'
+      - '--label=org.opencontainers.image.documentation={{.GitURL}}'
+      - '--label=org.opencontainers.image.created={{.Date}}'
+      - '--label=org.opencontainers.image.revision={{.FullCommit}}'
+      - '--label=org.opencontainers.image.version={{.Version}}'
+      - '--platform=linux/amd64'
+
+  - use: buildx
+    goos: linux
+    goarch: arm64
+    dockerfile: buildx.Dockerfile
+    image_templates:
+      - 'traefik/whoami:latest-arm64'
+      - 'traefik/whoami:{{ .Tag }}-arm64'
+      - 'traefik/whoami:v{{ .Major }}.{{ .Minor }}-arm64'
+      - 'ghcr.io/traefik/whoami:latest-arm64'
+      - 'ghcr.io/traefik/whoami:{{ .Tag }}-arm64'
+      - 'ghcr.io/traefik/whoami:v{{ .Major }}.{{ .Minor }}-arm64'
+    build_flag_templates:
+      - '--pull'
+      # https://github.com/opencontainers/image-spec/blob/main/annotations.md#pre-defined-annotation-keys
+      - '--label=org.opencontainers.image.title={{.ProjectName}}'
+      - '--label=org.opencontainers.image.description=Tiny Go webserver that prints OS information and HTTP request to output'
+      - '--label=org.opencontainers.image.source={{.GitURL}}'
+      - '--label=org.opencontainers.image.url={{.GitURL}}'
+      - '--label=org.opencontainers.image.documentation={{.GitURL}}'
+      - '--label=org.opencontainers.image.created={{.Date}}'
+      - '--label=org.opencontainers.image.revision={{.FullCommit}}'
+      - '--label=org.opencontainers.image.version={{.Version}}'
+      - '--platform=linux/arm64'
+
+  - use: buildx
+    goos: linux
+    goarch: arm
+    goarm: '7'
+    dockerfile: buildx.Dockerfile
+    image_templates:
+      - 'traefik/whoami:latest-armv7'
+      - 'traefik/whoami:{{ .Tag }}-armv7'
+      - 'traefik/whoami:v{{ .Major }}.{{ .Minor }}-armv7'
+      - 'ghcr.io/traefik/whoami:latest-armv7'
+      - 'ghcr.io/traefik/whoami:{{ .Tag }}-armv7'
+      - 'ghcr.io/traefik/whoami:v{{ .Major }}.{{ .Minor }}-armv7'
+    build_flag_templates:
+      - '--pull'
+      # https://github.com/opencontainers/image-spec/blob/main/annotations.md#pre-defined-annotation-keys
+      - '--label=org.opencontainers.image.title={{.ProjectName}}'
+      - '--label=org.opencontainers.image.description=Tiny Go webserver that prints OS information and HTTP request to output'
+      - '--label=org.opencontainers.image.source={{.GitURL}}'
+      - '--label=org.opencontainers.image.url={{.GitURL}}'
+      - '--label=org.opencontainers.image.documentation={{.GitURL}}'
+      - '--label=org.opencontainers.image.created={{.Date}}'
+      - '--label=org.opencontainers.image.revision={{.FullCommit}}'
+      - '--label=org.opencontainers.image.version={{.Version}}'
+      - '--platform=linux/arm/v7'
