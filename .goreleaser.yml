@@ -2,6 +2,7 @@ project_name: whoamimcp
 
 builds:
   - binary: whoamimcp
+    main: ./cmd/whoamimcp
     goos:
       - windows
       - darwin

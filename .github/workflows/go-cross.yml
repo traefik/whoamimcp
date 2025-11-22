@@ -33,4 +33,4 @@ jobs:
         run: go test -v -cover ./...
 
       - name: Build
-        run: go build -v -ldflags "-s -w" -trimpath
+        run: go build -v -ldflags "-s -w" -trimpath -o whoamimcp ./cmd/whoamimcp
