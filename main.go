@@ -17,46 +17,44 @@ func main() {
 	flag.StringVar(&addr, "addr", ":80", "http service address")
 	flag.Parse()
 
-	ctx := context.Background()
-	log.Fatal(startServer(ctx))
+	log.Fatal(startServer())
 }
 
 type HiArgs struct {
 	Name string `json:"name" jsonschema:"the name to say hi to"`
 }
 
-func SayHi(ctx context.Context, ss *mcp.ServerSession, params *mcp.CallToolParamsFor[HiArgs]) (*mcp.CallToolResultFor[struct{}], error) {
+func SayHi(_ context.Context, _ *mcp.CallToolRequest, args HiArgs) (*mcp.CallToolResult, any, error) {
 	name, _ := os.Hostname()
-	return &mcp.CallToolResultFor[struct{}]{
+	return &mcp.CallToolResult{
 		Content: []mcp.Content{
-			&mcp.TextContent{Text: fmt.Sprintf("Hello, %s from %s %s!", params.Arguments.Name, name, addr)},
+			&mcp.TextContent{Text: fmt.Sprintf("Hello, %s from %s %s!", args.Name, name, addr)},
 		},
-	}, nil
+	}, nil, nil
 }
 
-func PromptHi(ctx context.Context, ss *mcp.ServerSession, params *mcp.GetPromptParams) (*mcp.GetPromptResult, error) {
+func PromptHi(_ context.Context, req *mcp.GetPromptRequest) (*mcp.GetPromptResult, error) {
 	return &mcp.GetPromptResult{
 		Description: "Code review prompt",
 		Messages: []*mcp.PromptMessage{
-			{Role: "user", Content: &mcp.TextContent{Text: fmt.Sprintf("Say hi to %s from %s", params.Arguments["name"], addr)}},
+			{Role: "user", Content: &mcp.TextContent{Text: fmt.Sprintf("Say hi to %s from %s", req.Params.Arguments["name"], addr)}},
 		},
 	}, nil
 }
 
-func startServer(ctx context.Context) error {
+// newHandler builds the MCP streamable HTTP handler serving the greeter server.
+func newHandler() http.Handler {
 	server := mcp.NewServer(&mcp.Implementation{Name: "greeter_s1"}, nil)
 	mcp.AddTool(server, &mcp.Tool{Name: "greet", Description: "say hi"}, SayHi)
 	server.AddPrompt(&mcp.Prompt{Name: "greet"}, PromptHi)
 
-	// server.AddResource(&mcp.Resource{
-	// 	Name:     "info",
-	// 	MIMEType: "text/plain",
-	// 	URI:      "embedded:info",
-	// }, handleEmbeddedResource)
-
-	handler := mcp.NewStreamableHTTPHandler(func(*http.Request) *mcp.Server {
+	return mcp.NewStreamableHTTPHandler(func(*http.Request) *mcp.Server {
 		return server
 	}, nil)
+}
+
+func startServer() error {
+	handler := newHandler()
 	log.Printf("MCP Server handler listening at %s", addr)
 
 	return http.ListenAndServe(addr, http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
